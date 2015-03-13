@@ -328,7 +328,7 @@ public class Image {
         Image result = new Image(_width, _height);
 
         for (int y = 0; y < _height; y++) {
-            for (int x = 0; x < _height; x++) {
+            for (int x = 0; x < _width; x++) {
                 result.put(x, y, get(x, y) + img.get(x, y));
             }
         }
@@ -339,7 +339,7 @@ public class Image {
         Image result = new Image(_width, _height);
 
         for (int y = 0; y < _height; y++) {
-            for (int x = 0; x < _height; x++) {
+            for (int x = 0; x < _width; x++) {
                 result.put(x, y, get(x, y) - img.get(x, y));
             }
         }
