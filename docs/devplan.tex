@@ -1,0 +1,78 @@
+\documentclass[a4paper, 12pt]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+
+\begin{document}
+
+% \chapter*{Détection de pièces sur un jeu de dames}
+
+\title{Détection de pièces sur un jeu de dames}
+\author{Lacambre Ghjuvan, Ecormier Pierre}
+
+\maketitle
+
+\section{Solution globale au problème}
+
+Pour détecter les pièces sur le damier, nous avons décidé de diviser le problème en plusieurs étapes :
+\begin{itemize}
+\item La détection du damier dans l'image
+\item L'extraction du damier dans une nouvelle image
+\item La détection des cases individuelles à l'intérieur du damier
+\item La détection des cases contenant des pions
+\end{itemize}
+
+\section{Approche technique}
+
+\subsection*{Détection du damier}
+
+Afin de détecter le damier, les contours de l'image sont extraits grâce à l'algorithme de \textbf{Canny} (un filtre gaussien de rayon 5 et un double seuillage à 50 et 150 sont les valeurs par défaut actuelles).
+
+Les principales lignes de l'images sont ensuite calculées sur l'image renvoyée par Canny, avec la \textbf{Transformée de Hough}. La normalisation de l'espace de Hough puis la recherche des maxima locaux dans cet espace avec un thresholding permet de trouver les lignes les plus importantes. On peut également réduire les groupe de points rapprochés à un seul point maximum afin d'éviter la détection de lignes confondues.
+
+\subsection*{Extraction du damier}
+
+Les lignes obtenues à l'étape précédente devraient permettre la détection de 4 lignes formant un carré déformé, à l'emplacement du damier (les lignes interne du damier peuvent aider à la location du contour). Les 4 intersections de ces lignes correspondent aux coins du damier, et permettront de créer une nouvelle image droite contenant uniquement le damier, grâce à la \textbf{correction de perspective}.
+
+Afin de faciliter les étapes suivantes, on peut appliquer l'\textbf{égalisation d'histogramme adaptatif} afin de réduire les problèmes d'éclairage.
+
+\subsection*{Détection des cases}
+
+Une fois le damier droit, il faut supprimer la bordure du damier si elle existe, afin de ne laisser que les cases visibles. En divisant la zone restante en une matrice de 8x8, on peut diviser les cases de manière précise.
+
+Une méthode alternative serait de détecter les contours dans l'image du damier avec bordure, et de se baser sur les contours verticaux et horizontaux pour détecter l'emplacement des cases.
+
+\subsection*{Détection des pions}
+
+Étant donné qu'un jeu de dames ne contient des pions que sur les cases noires, on peut supprimer la moitié des cases du damier (une case sur deux) dans la recherche.
+
+En faisant la différence entre les cases noires deux à deux, on devrait obtenir des images très sombres (peu de différences) pour les cases vides. Les cases restantes devraient donc être les cases contenant un pion (cette hypothèse peut être confirmée en faisant la différence entre les cases restantes et la moyenne des cases vides).
+
+On peut ensuite différencier les différents pions en faisant la différence des images des pions : les images avec peu de différences sont de même couleur. Alternativement, on peut également séparer les différents pions en regardant la couleur dominante de l'image du pion sans le fond.
+
+\section{Problèmes et faiblesses}
+
+\begin{itemize}
+\item Selon les images, la détection des contours du damier peut être difficile. Un réhaussement des contours permettrait peut être de faciliter la détection.
+\item Sur les damiers non solides la transformée de Hough ne sera peut être pas suffisament robuste pour détecter des bords courbés.
+\item Des pions noirs sur des cases noirs peuvent passer comme des cases vides si leur couleur est trop proche.
+\end{itemize}
+
+\section{Travail effectué}
+
+\subsection*{Contexte du projet}
+
+Afin de faciliter le développement, l'ensemble des classes données et programmées en TP ont été recodées avec une structure réutilisable et facile d'utilisation.
+
+\subsection*{Avancement}
+
+Toutes les classes vues en TP sont intégrées et fonctionnelles, avec un plugin individuel de test. De plus, l'algorithme de \textbf{Canny} et la \textbf{Transformée de Hough} ont été implémentées et sont également fonctionnels.
+
+\section{Améliorations}
+
+\begin{itemize}
+\item La transformée de Hough probabliste peut être implémentée à la place de la transformée de Hough simple, permettant un traitement plus rapide au coût d'une précision légèrement moindre.
+\item L'utilisation du GPU pour l'application des masques de convolution devrait apporter un gain de performance significatif.
+\end{itemize}
+
+\end{document}
