@@ -1,1 +1,11 @@
+## Java stuff
 *.class
+
+## latex/pdflatex
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
