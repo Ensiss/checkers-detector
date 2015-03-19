@@ -44,8 +44,6 @@ Une méthode alternative serait de détecter les contours dans l'image du damier
 
 \subsection*{Détection des pions}
 
-Étant donné qu'un jeu de dames ne contient des pions que sur les cases noires, on peut supprimer la moitié des cases du damier (une case sur deux) dans la recherche.
-
 En faisant la différence entre les cases noires deux à deux, on devrait obtenir des images très sombres (peu de différences) pour les cases vides. Les cases restantes devraient donc être les cases contenant un pion (cette hypothèse peut être confirmée en faisant la différence entre les cases restantes et la moyenne des cases vides).
 
 On peut ensuite différencier les différents pions en faisant la différence des images des pions : les images avec peu de différences sont de même couleur. Alternativement, on peut également séparer les différents pions en regardant la couleur dominante de l'image du pion sans le fond.
