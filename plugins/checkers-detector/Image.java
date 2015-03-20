@@ -120,7 +120,7 @@ public class Image {
                 // Convert angle to neighbor pixel
                 // 0 = right, 1 = up-right, 2 = up, 3 = up-left
                 int dx = (new int[]{1, 1, 0, -1})[(int) angle % 4];
-                int dy = (new int[]{0, -1, -1, -1})[(int) angle % 4];
+                int dy = (new int[]{0, 1, 1, 1})[(int) angle % 4];
 
                 if (grad.get(x, y) > grad.get(x + dx, y + dy) &&
                     grad.get(x, y) > grad.get(x - dx, y - dy))
@@ -321,6 +321,17 @@ public class Image {
         for (int y = 0; y < dx.getHeight(); y++)
             for (int x = 0; x < dx.getWidth(); x++)
                 result.put(x, y, Math.sqrt(Math.pow(dx.get(x, y), 2) + Math.pow(dy.get(x, y), 2)));
+        return (result);
+    }
+
+    public Image invert() {
+        Image result = new Image(_width, _height);
+
+        for (int y = 0; y < _height; y++) {
+            for (int x = 0; x < _width; x++) {
+                result.put(x, y, 255 - get(x, y));
+            }
+        }
         return (result);
     }
 
