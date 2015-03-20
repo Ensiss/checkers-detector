@@ -34,7 +34,7 @@ public class Image {
     public List<Line> houghLines() {
         int maxDist = (int) Math.sqrt(_width * _width + _height * _height);
 
-        Image edges = canny(50, 250);
+        Image edges = canny(2, 25, 50);
         edges.display();
 
         Image houghSpace = new Image(360, 2 * maxDist);
@@ -106,9 +106,46 @@ public class Image {
         return (new Image(ip));
     }
 
-    public Image canny(int low, int high) {
+    private static int _cannyDoubleThreshold(int value, int low, int high) {
+        if (value >= high) // Strong edge
+            return (2);
+        if (value >= low) // Weak edge
+            return (1);
+        return (0); // No edge
+    }
+
+    private Image _cannyHysteresis(int low, int high) {
+        Image out = new Image(_width, _height);
+
+        for (int y = 1; y < _height - 1; y++) {
+            for (int x = 1; x < _width - 1; x++) {
+                int inRange = _cannyDoubleThreshold((int) get(x, y), low, high);
+
+                out.put(x, y, 0);
+                if (inRange == 2) {
+                    out.put(x, y, 255);
+                    continue;
+                }
+                if (inRange == 0)
+                    continue;
+                for (int j = -1; j <= 1; j++) {
+                    for (int i = -1; i <= 1; i++) {
+                        if (i == 0 && j == 0) // Because Java is too dumb to allow (!i && !j)
+                            continue;
+                        if (_cannyDoubleThreshold((int) get(x + i, y + j), low, high) == 2) {
+                            out.put(x, y, 255);
+                            i = j = 1;
+                        }
+                    }
+                }
+            }
+        }
+        return (out);
+    }
+
+    public Image canny(int gaussianRadius, int low, int high) {
         // Gaussian filter
-        Image gauss = gaussianFilter(5);
+        Image gauss = gaussianFilter(gaussianRadius);
 
         // Sobel gradient
         Image sobX = gauss.sobelX();
@@ -136,8 +173,8 @@ public class Image {
             }
         }
 
-        // Double thresholding
-        return (gauss.threshold(low, high));
+        // Hysteresis
+        return (gauss._cannyHysteresis(low, high));
     }
 
     public Image sharpen8() {
