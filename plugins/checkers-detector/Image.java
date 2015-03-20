@@ -55,7 +55,7 @@ public class Image {
 
         houghSpace = houghSpace.normalize();
         houghSpace.display();
-        houghSpace = houghSpace.threshold(125);
+        houghSpace = houghSpace.threshold(150);
         houghSpace.display();
 
         List<Line> lines = new ArrayList<Line>();
