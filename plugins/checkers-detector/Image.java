@@ -31,7 +31,7 @@ public class Image {
         this(imp.getProcessor());
     }
 
-    public Image houghLines() {
+    public List<Line> houghLines() {
         int maxDist = (int) Math.sqrt(_width * _width + _height * _height);
 
         Image edges = canny(50, 250);
@@ -58,44 +58,50 @@ public class Image {
         houghSpace = houghSpace.threshold(125);
         houghSpace.display();
 
+        List<Line> lines = new ArrayList<Line>();
+        for (int y = 0; y < houghSpace.getHeight(); y++) {
+            for (int x = 0; x < houghSpace.getWidth(); x++) {
+                if (houghSpace.get(x, y) > 0)
+                    lines.add(new Line(x * (Math.PI / 180.), y - maxDist));
+            }
+        }
+        return (lines);
+    }
+
+    public Image displayLines(List<Line> lines) {
         ImagePlus imp = getImagePlus();
         ImageProcessor ip = imp.getProcessor();
 
-        for (int y = 0; y < houghSpace.getHeight(); y++) {
-            for (int x = 0; x < houghSpace.getWidth(); x++) {
-                if (houghSpace.get(x, y) > 0) {
-                    double a = (double) x * (Math.PI / 180.);
-                    double d = y - maxDist;
+        for (Line l : lines) {
+            double a = l.getAngle();
+            double d = l.getDist();
+            double[] p = new double[12];
+            int i = 0;
 
-                    double[] p = new double[12];
-                    int i = 0;
+            double tmpx, tmpy;
 
-                    double tmpx, tmpy;
+            tmpx = 0;
+            tmpy = (d - tmpx * Math.cos(a)) / Math.sin(a);
+            if (tmpy >= 0 && tmpy < ip.getHeight()) {
+                p[i++] = tmpx; p[i++] = tmpy; }
 
-                    tmpx = 0;
-                    tmpy = (d - tmpx * Math.cos(a)) / Math.sin(a);
-                    if (tmpy >= 0 && tmpy < ip.getHeight()) {
-                        p[i++] = tmpx; p[i++] = tmpy; }
+            tmpx = ip.getWidth() - 1;
+            tmpy = (d - tmpx * Math.cos(a)) / Math.sin(a);
+            if (tmpy >= 0 && tmpy < ip.getHeight()) {
+                p[i++] = tmpx; p[i++] = tmpy; }
 
-                    tmpx = ip.getWidth() - 1;
-                    tmpy = (d - tmpx * Math.cos(a)) / Math.sin(a);
-                    if (tmpy >= 0 && tmpy < ip.getHeight()) {
-                        p[i++] = tmpx; p[i++] = tmpy; }
+            tmpy = 0;
+            tmpx = (d - tmpy * Math.sin(a)) / Math.cos(a);
+            if (tmpx > 0 && tmpx < ip.getWidth()) {
+                p[i++] = tmpx; p[i++] = tmpy; }
 
-                    tmpy = 0;
-                    tmpx = (d - tmpy * Math.sin(a)) / Math.cos(a);
-                    if (tmpx > 0 && tmpx < ip.getWidth()) {
-                        p[i++] = tmpx; p[i++] = tmpy; }
+            tmpy = ip.getHeight() - 1;
+            tmpx = (d - tmpy * Math.sin(a)) / Math.cos(a);
+            if (tmpx > 0 && tmpx < ip.getWidth()) {
+                p[i++] = tmpx; p[i++] = tmpy; }
 
-                    tmpy = ip.getHeight() - 1;
-                    tmpx = (d - tmpy * Math.sin(a)) / Math.cos(a);
-                    if (tmpx > 0 && tmpx < ip.getWidth()) {
-                        p[i++] = tmpx; p[i++] = tmpy; }
-
-                    ip.drawLine((int) p[0], (int) p[1],
-                                (int) p[2], (int) p[3]);
-                }
-            }
+            ip.drawLine((int) p[0], (int) p[1],
+                        (int) p[2], (int) p[3]);
         }
         return (new Image(ip));
     }
