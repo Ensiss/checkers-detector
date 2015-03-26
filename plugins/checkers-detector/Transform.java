@@ -5,12 +5,55 @@ import ij.process.*;
 import java.util.*;
 
 public class Transform {
-    public static double lerp(double a, double b, double x) {
-        return (a + (b - a) * x);
+    public static Image hShear(Image img, double a){
+        int offset = (int)(a*img.getHeight()+img.getWidth());
+        Image result;
+        if(offset > img.getWidth()){
+            result = new Image(offset,img.getHeight());
+            offset = 0;
+        } else {
+            offset = -offset;
+            result = new Image(img.getWidth() + offset, img.getHeight());
+        }
+        for(int i = 0; i < img.getHeight(); i++){
+            for(int j = 0; j < img.getWidth(); j++){
+                int newX = (int)(a*i+j);
+                if(newX >= 0 && newX < result.getWidth()){
+                    result.put(newX, i, img.get(j, i));
+                }
+            }
+        }
+        return result;
     }
 
-    public static Point lerp(Point a, Point b, double x) {
-        return (new Point(lerp(a.x, b.x, x), lerp(a.y, b.y, x)));
+    public static Image vShear(Image img, double a){
+        int offset = (int)(a*img.getWidth()+img.getHeight());
+        Image result;
+        if(offset > img.getHeight()){
+            result = new Image(img.getWidth(),offset);
+            offset = 0;
+        } else {
+            offset = -(offset-img.getHeight());
+            result = new Image(img.getWidth(), img.getHeight() + offset);
+        }
+        for(int i = 0; i < img.getHeight(); i++){
+            for(int j = 0; j < img.getWidth(); j++){
+                int newY = (int)(a*j+i) + offset;
+                if(newY >= 0 && newY < result.getHeight()){
+                    result.put(j, newY, img.get(j, i));
+                }
+            }
+        }
+        return result;
+    }
+
+    public static Image rotate(Image img, double a){
+        a = Math.PI*a /180;
+        return vShear(
+                      hShear(
+                             vShear(img, -Math.tan(a/2)),
+                             Math.sin(a)),
+                      -Math.tan(a/2));
     }
 
     public static Image project(Image img, List<Point> orig, int size) {
@@ -20,10 +63,10 @@ public class Transform {
             for (int x = 0; x < out.getWidth(); x++) {
                 double xratio = (double) x / (double) out.getWidth();
                 double yratio = (double) y / (double) out.getHeight();
-                yratio *= lerp((orig.get(1).x - orig.get(0).x) / (orig.get(3).x - orig.get(2).x), 1, yratio);
-                Point upper = lerp(orig.get(0), orig.get(1), xratio);
-                Point lower = lerp(orig.get(2), orig.get(3), xratio);
-                Point pt = lerp(upper, lower, yratio);
+                yratio *= Utils.lerp((orig.get(1).x - orig.get(0).x) / (orig.get(3).x - orig.get(2).x), 1, yratio);
+                Point upper = Utils.lerp(orig.get(0), orig.get(1), xratio);
+                Point lower = Utils.lerp(orig.get(2), orig.get(3), xratio);
+                Point pt = Utils.lerp(upper, lower, yratio);
                 int px = (int) pt.x, py = (int) pt.y;
                 Point frac = new Point(pt.x - px, pt.y - py);
                 double col = 0;
