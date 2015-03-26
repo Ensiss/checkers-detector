@@ -115,7 +115,6 @@ public class Segmentation {
                     }
                 }
             }
-            System.out.println(x + " " + y + " " + value);
             result.put(x, y, 255);
             tmp.erase(x, y, 10);
         }

@@ -71,6 +71,27 @@ public class HoughLines_ implements PlugInFilter {
         return (getTriangleArea(p1, p2, p3) + getTriangleArea(p2, p3, p4));
     }
 
+    private static List<Point> sortPoints(List<Point> pts) {
+        Point center = new Point(0, 0);
+
+        for (Point p : pts) {
+            center.x += p.x;
+            center.y += p.y;
+        }
+        center.x /= pts.size();
+        center.y /= pts.size();
+
+        Collections.sort(pts, new Comparator<Point>() {
+                public int compare(Point p1, Point p2) {
+                    Double a1 = Math.atan2(p1.y - center.y, p1.x - center.x);
+                    Double a2 = Math.atan2(p2.y - center.y, p2.x - center.x);
+                    return (a1.compareTo(a2));
+                }
+            });
+        pts.add(pts.remove(2));
+        return (pts);
+    }
+
     public static List<Point> getMaxArea(Image img, List<Line> lines) {
         int[] index = new int[4];
 
@@ -97,7 +118,7 @@ public class HoughLines_ implements PlugInFilter {
         }
 
         if (maxIndex != -1)
-            return (quadList.get(maxIndex));
+            return (sortPoints(quadList.get(maxIndex)));
         return (null);
     }
 
