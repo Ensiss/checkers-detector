@@ -31,6 +31,24 @@ public class Image {
         this(imp.getProcessor());
     }
 
+    public Image(Image img) {
+        this(img, 0, 0);
+    }
+
+    public Image(Image img, int x, int y) {
+        this(img, x, y, img.getWidth() - x, img.getHeight() - y);
+    }
+
+    public Image(Image img, int x, int y, int width, int height){
+        this(width, height);
+
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                put(j, i, img.get(x + j, y + i));
+            }
+        }
+    }
+
     public Image drawLines(List<Line> lines) {
         ImagePlus imp = this.getImagePlus();
         ImageProcessor ip = imp.getProcessor();
@@ -98,41 +116,6 @@ public class Image {
             }
         }
         return (result);
-    }
-
-    public static boolean copy(Image img1, Image img2){
-        return copy(img1, img2, 0, 0);
-    }
-
-    public static boolean copy(Image img1, Image img2, int x, int y){
-        return copy(img1, img2, x, y, img1.getWidth(), img1.getHeight());
-    }
-
-    public static boolean copy(Image img1, Image img2, int x, int y, int width, int height){
-        if(width+x > img2.getWidth() || height+y > img2.getHeight()){
-            return false;
-        }
-        for(int i = 0; i < height; i++){
-            for(int j = 0; j < width; j++){
-                img2.put(x+j, y+i, img1.get(j, i));
-            }
-        }
-        return true;
-    }
-
-    public Image translate(int x, int y){
-        if(x < 0 || y < 0){
-            throw new IllegalArgumentException("Can't translate into the negatives yet");
-        }
-        Image result = new Image(getWidth(), getHeight());
-        copy(this, result, x, y, getWidth()-x, getHeight()-y);
-        return result;
-    }
-
-    public Image enlarge(int width, int height){
-        Image result = new Image(getWidth()+width, getHeight()+height);
-        copy(this, result);
-        return result;
     }
 
     public ImagePlus getImagePlus() {
