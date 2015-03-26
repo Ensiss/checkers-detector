@@ -68,7 +68,7 @@ public class HoughLines_ implements PlugInFilter {
     }
 
     private static double getQuadArea(Point p1, Point p2, Point p3, Point p4) {
-        return (getTriangleArea(p1, p2, p3) + getTriangleArea(p1, p3, p4));
+        return (getTriangleArea(p1, p2, p3) + getTriangleArea(p2, p3, p4));
     }
 
     public static List<Point> getMaxArea(Image img, List<Line> lines) {
@@ -86,7 +86,7 @@ public class HoughLines_ implements PlugInFilter {
                         if (pts == null)
                             continue;
                         double area = getQuadArea(pts.get(0), pts.get(1), pts.get(2), pts.get(3));
-                        if (area > maxArea) {
+                        if (maxArea == -1 || area > maxArea) {
                             maxArea = area;
                             maxIndex = quadList.size();
                         }

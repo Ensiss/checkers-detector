@@ -7,7 +7,7 @@ public class LineDetection {
     public static List<Line> hough(Image img) {
         int maxDist = (int) Math.sqrt(img.getWidth() * img.getWidth() + img.getHeight() * img.getHeight());
 
-        Image edges = EdgeDetection.canny(Filter.median(img, 3), 2, 25, 50);
+        Image edges = EdgeDetection.canny(Filter.median(img, 2), 2, 25, 50);
         edges.display();
 
         Image houghSpace = new Image(360, 2 * maxDist);
@@ -21,14 +21,15 @@ public class LineDetection {
                     double d = x * Math.cos(a) + y * Math.sin(a);
                     int ny = (int) (d) + maxDist;
 
-                    houghSpace.getData()[ny][nx]++;
+                    if (d >= 0)
+                        houghSpace.getData()[ny][nx]++;
                 }
             }
         }
 
         houghSpace = Histogram.normalize(houghSpace);
         houghSpace.display();
-        houghSpace = Segmentation.threshold(houghSpace, 150);
+        houghSpace = Segmentation.smartMax(houghSpace, 40);
         houghSpace.display();
 
         List<Line> lines = new ArrayList<Line>();

@@ -118,6 +118,18 @@ public class Image {
         return (result);
     }
 
+    public void erase(int x, int y, int radius){
+        if(radius == 0 || x < 0 || x >= this.getWidth() || y < 0 || y >= this.getHeight()){
+            return;
+        }
+        this.put(x, y, 0);
+        radius -= 1;
+        erase(x+1, y, radius);
+        erase(x-1, y, radius);
+        erase(x, y+1, radius);
+        erase(x, y-1, radius);
+    }
+
     public ImagePlus getImagePlus() {
         ImagePlus imp = NewImage.createByteImage("", _width, _height, 1, NewImage.FILL_BLACK);
         ImageProcessor ip = imp.getProcessor();
