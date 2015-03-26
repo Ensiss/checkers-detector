@@ -72,7 +72,7 @@ public class HoughLines_ implements PlugInFilter {
         return (getTriangleArea(p1, p2, p3) + getTriangleArea(p1, p3, p4));
     }
 
-    public static List<Point> getRect(Image img, List<Line> lines) {
+    public static List<Point> getMaxArea(Image img, List<Line> lines) {
         int[] index = new int[4];
 
         List<List<Point>> quadList = new ArrayList<List<Point>>();
@@ -97,22 +97,16 @@ public class HoughLines_ implements PlugInFilter {
             }
         }
 
-        if (maxIndex != -1) {
-            ImagePlus imp = img.getImagePlus();
-            ImageProcessor ip = imp.getProcessor();
-
-            for (Point pt : quadList.get(maxIndex)) {
-                ip.fillOval((int) pt.x - 2, (int) pt.y - 2, 4, 4);
-            }
-            new Image(ip).display();
-        }
-        return (quadList.get(maxIndex));
+        if (maxIndex != -1)
+            return (quadList.get(maxIndex));
+        return (null);
     }
 
     public void run(ImageProcessor ip) {
         Image img = new Image(ip);
-        List<Line> lines = img.houghLines();
-        getRect(img.displayLines(lines), lines);
+        List<Line> lines = LineDetection.hough(img);
+        img.drawLines(lines).display();
+        img.drawPts(getMaxArea(img, lines)).display();
     }
 
     public int setup(String args, ImagePlus imp) {

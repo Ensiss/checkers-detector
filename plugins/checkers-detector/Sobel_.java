@@ -3,9 +3,8 @@ import ij.plugin.filter.*;
 import ij.process.*;
 
 public class Sobel_ implements PlugInFilter {
-
     public void run(ImageProcessor ip) {
-        new Image(ip).sobel().display();
+        EdgeDetection.sobel(new Image(ip)).display();
     }
 
     public int setup(String args, ImagePlus imp) {

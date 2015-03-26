@@ -3,10 +3,9 @@ import ij.gui.*;
 import ij.plugin.filter.*;
 import ij.process.*;
 
-public class Etirement_ implements PlugInFilter {
-
+public class Normalize_ implements PlugInFilter {
     public void run(ImageProcessor ip) {
-        new Image(ip).normalize().display();
+        Histogram.normalize(new Image(ip)).display();
     }
 
     public int setup(String arg, ImagePlus imp) {

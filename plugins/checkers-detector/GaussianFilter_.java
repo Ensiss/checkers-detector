@@ -3,8 +3,7 @@ import ij.gui.*;
 import ij.plugin.filter.*;
 import ij.process.*;
 
-public class FiltreGaussien_ implements PlugInFilter {
-
+public class GaussianFilter_ implements PlugInFilter {
     public void run(ImageProcessor ip) {
         GenericDialog gd = new GenericDialog("Options du flou gaussien");
         gd.addNumericField("Rayon du masque", 1, 0);
@@ -12,7 +11,7 @@ public class FiltreGaussien_ implements PlugInFilter {
         if (gd.wasCanceled()) return;
 
         int radius = (int) gd.getNextNumber();
-        new Image(ip).gaussianFilter(radius).display();
+        Filter.gaussian(new Image(ip), radius).display();
     }
 
     public int setup(String args, ImagePlus imp) {
