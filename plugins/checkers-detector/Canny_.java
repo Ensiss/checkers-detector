@@ -4,7 +4,6 @@ import ij.plugin.filter.*;
 import ij.process.*;
 
 public class Canny_ implements PlugInFilter {
-
     public void run(ImageProcessor ip) {
         GenericDialog gd = new GenericDialog("Options du flou gaussien");
         gd.addNumericField("Gaussian Filter radius", 2, 0);
@@ -17,7 +16,7 @@ public class Canny_ implements PlugInFilter {
         int low = (int) gd.getNextNumber();
         int high = (int) gd.getNextNumber();
 
-        new Image(ip).canny(radius, low, high).display();
+        EdgeDetection.canny(new Image(ip), radius, low, high).display();
     }
 
     public int setup(String args, ImagePlus imp) {

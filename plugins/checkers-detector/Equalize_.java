@@ -3,10 +3,9 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.*;
 import ij.process.*;
 
-public class Egalisation_ implements PlugInFilter {
-
+public class Equalize_ implements PlugInFilter {
     public void run(ImageProcessor ip) {
-        new Image(ip).equalize().display();
+        Histogram.equalize(new Image(ip)).display();
     }
 
     public int setup(String args, ImagePlus imp) {
