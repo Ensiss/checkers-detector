@@ -43,8 +43,7 @@ public class HoughLines_ implements PlugInFilter {
             return (null);
 
         // Intersect the opposite edge with the two edges
-        // Loop in reverse order so the corners order is consistent
-        for (int i = 3; i > 0; i--) {
+        for (int i = 1; i < 4; i++) {
             if (i != oppositeIdx) {
                 Point pt = getIntersection(img, lines.get(index[i]), lines.get(index[oppositeIdx]));
                 if (pt != null)
@@ -104,9 +103,26 @@ public class HoughLines_ implements PlugInFilter {
 
     public void run(ImageProcessor ip) {
         Image img = new Image(ip);
+
         List<Line> lines = LineDetection.hough(img);
+        List<Point> rect = new ArrayList<Point>();
+        rect = getMaxArea(img, lines);
+
+        // 3.tif
+        // rect.add(new Point(135,45));
+        // rect.add(new Point(505, 45));
+        // rect.add(new Point(35, 340));
+        // rect.add(new Point(605, 345));
+
+        // 6.tif
+        // rect.add(new Point(218, 28));
+        // rect.add(new Point(548, 70));
+        // rect.add(new Point(14, 113));
+        // rect.add(new Point(517, 204));
+
+        img.drawPts(rect).display();
         img.drawLines(lines).display();
-        img.drawPts(getMaxArea(img, lines)).display();
+        Transform.project(img, rect, 512).display();
     }
 
     public int setup(String args, ImagePlus imp) {
