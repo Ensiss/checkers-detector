@@ -98,4 +98,28 @@ public class Segmentation {
         }
         return (threshold(img, mini));
     }
+
+    //@TODO: Return an array of Points rather than an Image
+    public static Image smartMax(Image img, int count){
+        Image result = new Image(img.getWidth(), img.getHeight());
+        Image tmp = new Image(img.getWidth(), img.getHeight());
+        Image.copy(img, tmp);
+        for(int k = 0; k < 40; k++){
+            int x = 0, y = 0;
+            double value = 0;
+            for(int i = 0; i < tmp.getHeight(); i++){
+                for(int j = 0; j < tmp.getWidth(); j++){
+                    if(tmp.get(j, i) > value){
+                        x = j;
+                        y = i;
+                        value = img.get(j, i);
+                    }
+                }
+            }
+            System.out.println(x + " " + y + " " + value);
+            result.put(x, y, value);
+            tmp.erase(x, y, 10);
+        }
+        return result;
+    }
 }

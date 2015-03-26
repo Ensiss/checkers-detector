@@ -28,7 +28,7 @@ public class LineDetection {
 
         houghSpace = Histogram.normalize(houghSpace);
         houghSpace.display();
-        houghSpace = Segmentation.threshold(houghSpace, 150);
+        houghSpace = Segmentation.smartMax(houghSpace);
         houghSpace.display();
 
         List<Line> lines = new ArrayList<Line>();
