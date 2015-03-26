@@ -91,7 +91,7 @@ public class Image {
                     result.put(x, y, 0);
                     for (int j = -masque.getRadius(); j <= masque.getRadius(); j++) {
                         for (int i = -masque.getRadius(); i <= masque.getRadius(); i++) {
-                            result.put(x, y, result.get(x, y) + get(x + i, y + j) * masque.get(i, j));
+                            result.put(x, y, result.get(x, y) + get(x + i, y + j) * masque.get(-i, -j));
                         }
                     }
                 }
