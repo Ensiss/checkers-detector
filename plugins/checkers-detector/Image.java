@@ -31,39 +31,6 @@ public class Image {
         this(imp.getProcessor());
     }
 
-    public Image convolve(Mask masque) {
-        Image result = new Image(_width, _height);
-
-        for (int y = 0; y < _height; y++) {
-            for (int x = 0; x < _width; x++) {
-                if (x < masque.getRadius() || x >= _width - masque.getRadius() ||
-                    y < masque.getRadius() || y >= _height - masque.getRadius())
-                    result.put(x, y, get(x, y));
-                else {
-                    result.put(x, y, 0);
-                    for (int j = -masque.getRadius(); j <= masque.getRadius(); j++) {
-                        for (int i = -masque.getRadius(); i <= masque.getRadius(); i++) {
-                            result.put(x, y, result.get(x, y) + get(x + i, y + j) * masque.get(i, j));
-                        }
-                    }
-                }
-            }
-        }
-        return (result);
-    }
-
-    public ImagePlus getImagePlus() {
-        ImagePlus imp = NewImage.createByteImage("", _width, _height, 1, NewImage.FILL_BLACK);
-        ImageProcessor ip = imp.getProcessor();
-
-        for (int y = 0; y < _height; y++) {
-            for (int x = 0; x < _width; x++) {
-                ip.putPixel(x, y, (int) Math.max(Math.min(get(x, y), 255), 0));
-            }
-        }
-        return (imp);
-    }
-
     public Image drawLines(List<Line> lines) {
         ImagePlus imp = this.getImagePlus();
         ImageProcessor ip = imp.getProcessor();
@@ -110,6 +77,74 @@ public class Image {
             ip.fillOval((int) pt.x - 2, (int) pt.y - 2, 4, 4);
         }
         return (new Image(ip));
+    }
+
+    public Image convolve(Mask masque) {
+        Image result = new Image(_width, _height);
+
+        for (int y = 0; y < _height; y++) {
+            for (int x = 0; x < _width; x++) {
+                if (x < masque.getRadius() || x >= _width - masque.getRadius() ||
+                    y < masque.getRadius() || y >= _height - masque.getRadius())
+                    result.put(x, y, get(x, y));
+                else {
+                    result.put(x, y, 0);
+                    for (int j = -masque.getRadius(); j <= masque.getRadius(); j++) {
+                        for (int i = -masque.getRadius(); i <= masque.getRadius(); i++) {
+                            result.put(x, y, result.get(x, y) + get(x + i, y + j) * masque.get(i, j));
+                        }
+                    }
+                }
+            }
+        }
+        return (result);
+    }
+
+    public static boolean copy(Image img1, Image img2){
+        return copy(img1, img2, 0, 0);
+    }
+
+    public static boolean copy(Image img1, Image img2, int x, int y){
+        return copy(img1, img2, x, y, img1.getWidth(), img1.getHeight());
+    }
+
+    public static boolean copy(Image img1, Image img2, int x, int y, int width, int height){
+        if(width+x > img2.getWidth() || height+y > img2.getHeight()){
+            return false;
+        }
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                img2.put(x+j, y+i, img1.get(j, i));
+            }
+        }
+        return true;
+    }
+
+    public Image translate(int x, int y){
+        if(x < 0 || y < 0){
+            throw new IllegalArgumentException("Can't translate into the negatives yet");
+        }
+        Image result = new Image(getWidth(), getHeight());
+        copy(this, result, x, y, getWidth()-x, getHeight()-y);
+        return result;
+    }
+
+    public Image enlarge(int width, int height){
+        Image result = new Image(getWidth()+width, getHeight()+height);
+        copy(this, result);
+        return result;
+    }
+
+    public ImagePlus getImagePlus() {
+        ImagePlus imp = NewImage.createByteImage("", _width, _height, 1, NewImage.FILL_BLACK);
+        ImageProcessor ip = imp.getProcessor();
+
+        for (int y = 0; y < _height; y++) {
+            for (int x = 0; x < _width; x++) {
+                ip.putPixel(x, y, (int) Math.max(Math.min(get(x, y), 255), 0));
+            }
+        }
+        return (imp);
     }
 
     public void display() {
