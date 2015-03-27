@@ -71,20 +71,21 @@ public class Image {
     }
 
     public Image convolve(Mask m){
-        return convolve(m, 3);
+        return convolve(m, 0);
     }
 
+    /**
+     * @param int type : 0 clamp to edge, 1 mirrored repeat, 2 repeat, 3 clamp to border
+     */
     public Image convolve(Mask mask, int type) {
         Image result = new Image(getWidth(), getHeight());
 
         for(int y = 0; y < getHeight(); y++){
             for(int x = 0; x < getWidth(); x++){
-                if(type == 3 && x < mask.getRadius() || x >= getWidth() - mask.getRadius() ||
-                        y < mask.getRadius() || y >= getHeight() - mask.getRadius())
-                    result.put(x, y, 0);
-                else {
-                    for(int j = -mask.getRadius(); j < mask.getRadius(); j++){
-                        for(int i = -mask.getRadius(); i < mask.getRadius(); i++){
+                if(!(type == 3 && (x < mask.getRadius() || x >= getWidth() - mask.getRadius() ||
+                        y < mask.getRadius() || y >= getHeight() - mask.getRadius()))){
+                    for(int j = -mask.getRadius(); j <= mask.getRadius(); j++){
+                        for(int i = -mask.getRadius(); i <= mask.getRadius(); i++){
                             int newX = x + i;
                             int newY = y + j;
                             if(newX < 0 || newX >= getWidth()){
