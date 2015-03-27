@@ -97,25 +97,47 @@ public class Image {
         return (new Image(ip));
     }
 
-    public Image convolve(Mask masque) {
-        Image result = new Image(_width, _height);
+    public Image convolve(Mask m){
+        return convolve(m, 3);
+    }
 
-        for (int y = 0; y < _height; y++) {
-            for (int x = 0; x < _width; x++) {
-                if (x < masque.getRadius() || x >= _width - masque.getRadius() ||
-                    y < masque.getRadius() || y >= _height - masque.getRadius())
-                    result.put(x, y, get(x, y));
-                else {
+    public Image convolve(Mask mask, int type) {
+        Image result = new Image(getWidth(), getHeight());
+
+        for(int y = 0; y < getHeight(); y++){
+            for(int x = 0; x < getWidth(); x++){
+                if(type == 3 && x < mask.getRadius() || x >= getWidth() - mask.getRadius() ||
+                        y < mask.getRadius() || y >= getHeight() - mask.getRadius())
                     result.put(x, y, 0);
-                    for (int j = -masque.getRadius(); j <= masque.getRadius(); j++) {
-                        for (int i = -masque.getRadius(); i <= masque.getRadius(); i++) {
-                            result.put(x, y, result.get(x, y) + get(x + i, y + j) * masque.get(-i, -j));
+                else {
+                    for(int j = -mask.getRadius(); j < mask.getRadius(); j++){
+                        for(int i = -mask.getRadius(); i < mask.getRadius(); i++){
+                            int newX = x + i;
+                            int newY = y + j;
+                            if(newX < 0 || newX >= getWidth()){
+                                if(type == 0)
+                                    newX = x - i;
+                                else if(type == 1)
+                                    newX = x - 2*i;
+                                else if(type == 2)
+                                    newX = (newX + getWidth()) % getWidth();
+                            }
+                            if(newY < 0 || newY >= getHeight()){
+                                if(type == 0)
+                                    newY = y - j;
+                                else if(type == 1)
+                                    newY = y - 2*j;
+                                else if(type == 2)
+                                    newY = (newY + getHeight()) % getHeight();
+                            }
+                            result.put(x, y, result.get(x, y) + get(newX, newY)*mask.get(i, j));
                         }
                     }
                 }
             }
         }
-        return (result);
+
+        return result;
     }
 
     public void erase(int x, int y, int radius){
