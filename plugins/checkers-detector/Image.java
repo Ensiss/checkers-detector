@@ -54,35 +54,8 @@ public class Image {
         ImageProcessor ip = imp.getProcessor();
 
         for (Line l : lines) {
-            double a = l.getAngle();
-            double d = l.getDist();
-            double[] p = new double[12];
-            int i = 0;
-
-            double tmpx, tmpy;
-
-            tmpx = 0;
-            tmpy = (d - tmpx * Math.cos(a)) / Math.sin(a);
-            if (tmpy >= 0 && tmpy < ip.getHeight()) {
-                p[i++] = tmpx; p[i++] = tmpy; }
-
-            tmpx = ip.getWidth() - 1;
-            tmpy = (d - tmpx * Math.cos(a)) / Math.sin(a);
-            if (tmpy >= 0 && tmpy < ip.getHeight()) {
-                p[i++] = tmpx; p[i++] = tmpy; }
-
-            tmpy = 0;
-            tmpx = (d - tmpy * Math.sin(a)) / Math.cos(a);
-            if (tmpx > 0 && tmpx < ip.getWidth()) {
-                p[i++] = tmpx; p[i++] = tmpy; }
-
-            tmpy = ip.getHeight() - 1;
-            tmpx = (d - tmpy * Math.sin(a)) / Math.cos(a);
-            if (tmpx > 0 && tmpx < ip.getWidth()) {
-                p[i++] = tmpx; p[i++] = tmpy; }
-
-            ip.drawLine((int) p[0], (int) p[1],
-                        (int) p[2], (int) p[3]);
+            ip.drawLine((int) l.getStart().x, (int) l.getStart().y,
+                        (int) l.getEnd().x, (int) l.getEnd().y);
         }
         return (new Image(ip));
     }

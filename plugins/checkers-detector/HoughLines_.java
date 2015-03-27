@@ -5,24 +5,6 @@ import ij.process.*;
 import java.util.*;
 
 public class HoughLines_ implements PlugInFilter {
-    public static Point getIntersection(Image img, Line l1, Line l2) {
-        // L1: y = ax + b
-        double a = -Math.cos(l1.getAngle()) / Math.sin(l1.getAngle());
-        double b = l1.getDist() / Math.sin(l1.getAngle());
-        // L2: y = mx + p
-        double m = -Math.cos(l2.getAngle()) / Math.sin(l2.getAngle());
-        double p = l2.getDist() / Math.sin(l2.getAngle());
-
-        double x = (p - b) / (a - m);
-        double y = a * x + b;
-
-        // Out of bounds
-        if (x < 0 || x >= img.getWidth() ||
-            y < 0 || y >= img.getHeight())
-            return (null);
-        return (new Point(x, y));
-    }
-
     public static List<Point> getArea(Image img, List<Line> lines, int[] index) {
         List<Point> pts = new ArrayList<Point>();
 
@@ -30,7 +12,7 @@ public class HoughLines_ implements PlugInFilter {
         int     oppositeIdx = 0;
         // Get intersections between 1st line and the others
         for (int i = 1; i < 4; i++) {
-            Point pt = getIntersection(img, lines.get(index[0]), lines.get(index[i]));
+            Point pt = lines.get(index[0]).intersect(lines.get(index[i]));
             if (pt != null)
                 pts.add(pt);
             else
@@ -45,7 +27,7 @@ public class HoughLines_ implements PlugInFilter {
         // Intersect the opposite edge with the two edges
         for (int i = 1; i < 4; i++) {
             if (i != oppositeIdx) {
-                Point pt = getIntersection(img, lines.get(index[i]), lines.get(index[oppositeIdx]));
+                Point pt = lines.get(index[i]).intersect(lines.get(index[oppositeIdx]));
                 if (pt != null)
                     pts.add(pt);
             }
