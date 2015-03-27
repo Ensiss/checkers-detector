@@ -36,7 +36,7 @@ public class LineDetection {
         for (int y = 0; y < houghSpace.getHeight(); y++) {
             for (int x = 0; x < houghSpace.getWidth(); x++) {
                 if (houghSpace.get(x, y) > 0)
-                    lines.add(new Line(x * (Math.PI / 180.), y - maxDist));
+                    lines.add(new Line(x * (Math.PI / 180.), y - maxDist, img));
             }
         }
         return (lines);
