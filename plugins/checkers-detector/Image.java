@@ -65,7 +65,7 @@ public class Image {
         ImageProcessor ip = imp.getProcessor();
 
         for (Point pt : points) {
-            ip.fillOval((int) pt.x - 2, (int) pt.y - 2, 4, 4);
+            ip.fillOval((int) pt.x, (int) pt.y, 4, 4);
         }
         return (new Image(ip));
     }

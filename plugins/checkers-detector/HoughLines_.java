@@ -7,30 +7,33 @@ import java.util.*;
 public class HoughLines_ implements PlugInFilter {
     public static List<Point> getArea(Image img, List<Line> lines, int[] index) {
         List<Point> pts = new ArrayList<Point>();
-
         Point[] intersect = new Point[3];
         int     oppositeIdx = 0;
+        int[]   lrIdx = new int[3];
+        int     lrCount = 0;
+
         // Get intersections between 1st line and the others
         for (int i = 1; i < 4; i++) {
             Point pt = lines.get(index[0]).intersect(lines.get(index[i]));
-            if (pt != null)
+            if (pt != null) {
                 pts.add(pt);
-            else
+                lrIdx[lrCount++] = i;
+            } else
                 oppositeIdx = i;
         }
 
+        if (lines.get(index[lrIdx[0]]).intersect(lines.get(index[lrIdx[1]])) != null)
+            return (null);
 
         // We want a line to match exactly two other
         if (pts.size() != 2)
             return (null);
 
         // Intersect the opposite edge with the two edges
-        for (int i = 1; i < 4; i++) {
-            if (i != oppositeIdx) {
-                Point pt = lines.get(index[i]).intersect(lines.get(index[oppositeIdx]));
-                if (pt != null)
-                    pts.add(pt);
-            }
+        for (int i = 0; i < 2; i++) {
+            Point pt = lines.get(index[oppositeIdx]).intersect(lines.get(index[lrIdx[i]]));
+            if (pt != null)
+                pts.add(pt);
         }
 
         // We want 4 edges

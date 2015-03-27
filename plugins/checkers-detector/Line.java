@@ -41,30 +41,34 @@ public class Line {
         double x, y;
         double dx = _end.x - _start.x;
         double dy = _end.y - _start.y;
-        double steps = Math.max(dx, dy);
+        double steps = Math.abs(Math.max(dx, dy));
         dx /= steps;
         dy /= steps;
 
         // Clip line start
         x = _start.x;
         y = _start.y;
-        for (int i = 0; i < steps; i++, x += dx, y += dy) {
+        for (int i = 0; i < steps; i++) {
             if (mask.get((int) x, (int) y) > 0) {
                 _start.x = x;
                 _start.y = y;
                 break;
             }
+            x += dx;
+            y += dy;
         }
 
         // Clip line end
         x = _end.x;
         y = _end.y;
-        for (int i = 0; i < steps; i++, x -= dx, y -= dy) {
+        for (int i = 0; i < steps; i++) {
             if (mask.get((int) x, (int) y) > 0) {
                 _end.x = x;
                 _end.y = y;
                 break;
             }
+            x -= dx;
+            y -= dy;
         }
     }
 
