@@ -32,11 +32,18 @@ public class LineDetection {
         houghSpace = Segmentation.smartMax(houghSpace, 40);
         houghSpace.display();
 
+        StructElement elt = new StructElement(StructElement.Type.CIRCLE, 2);
+        Image mask = Morphology.dilate(edges, elt);
+        mask.display();
+
         List<Line> lines = new ArrayList<Line>();
         for (int y = 0; y < houghSpace.getHeight(); y++) {
             for (int x = 0; x < houghSpace.getWidth(); x++) {
-                if (houghSpace.get(x, y) > 0)
-                    lines.add(new Line(x * (Math.PI / 180.), y - maxDist, img));
+                if (houghSpace.get(x, y) > 0) {
+                    Line l = new Line(x * (Math.PI / 180.), y - maxDist, img);
+                    l.clip(mask);
+                    lines.add(l);
+                }
             }
         }
         return (lines);
