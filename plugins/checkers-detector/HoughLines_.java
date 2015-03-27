@@ -72,7 +72,7 @@ public class HoughLines_ implements PlugInFilter {
     }
 
     private static List<Point> sortPoints(List<Point> pts) {
-        Point center = new Point(0, 0);
+        final Point center = new Point(0, 0);
 
         for (Point p : pts) {
             center.x += p.x;
