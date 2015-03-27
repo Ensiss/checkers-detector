@@ -37,6 +37,37 @@ public class Line {
         _end = end;
     }
 
+    public void clip(Image mask) {
+        double x, y;
+        double dx = _end.x - _start.x;
+        double dy = _end.y - _start.y;
+        double steps = Math.max(dx, dy);
+        dx /= steps;
+        dy /= steps;
+
+        // Clip line start
+        x = _start.x;
+        y = _start.y;
+        for (int i = 0; i < steps; i++, x += dx, y += dy) {
+            if (mask.get((int) x, (int) y) > 0) {
+                _start.x = x;
+                _start.y = y;
+                break;
+            }
+        }
+
+        // Clip line end
+        x = _end.x;
+        y = _end.y;
+        for (int i = 0; i < steps; i++, x -= dx, y -= dy) {
+            if (mask.get((int) x, (int) y) > 0) {
+                _end.x = x;
+                _end.y = y;
+                break;
+            }
+        }
+    }
+
     public Point intersect(Line l) {
         double x1 = _start.x, y1 = _start.y;
         double x2 = _end.x, y2 = _end.y;
