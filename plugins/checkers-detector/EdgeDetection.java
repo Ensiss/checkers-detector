@@ -54,4 +54,31 @@ public class EdgeDetection {
             });
         return (img.convolve(mask));
     }
+
+    public static Image edgeGradient(Image img, int radius) {
+        img = EdgeDetection.canny(Filter.median(img, 2), 2, 25, 50);
+        Image out = new Image(img.getWidth(), img.getHeight());
+
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                double mindist = -1;
+                for (int j = -radius; j <= radius; j++) {
+                    for (int i = -radius; i <= radius; i++) {
+                        if (x + i < 0 || x + i >= img.getWidth() ||
+                            y + j < 0 || y + j >= img.getHeight())
+                            continue;
+                        double dist = i * i + j * j;
+                        if (img.get(x + i, y + j) == 255 &&
+                            (mindist == -1 || dist < mindist))
+                            mindist = dist;
+                    }
+                }
+                if (mindist == -1 || mindist > radius * radius)
+                    out.put(x, y, 0);
+                else
+                    out.put(x, y, 255 - (255.0 * mindist / (double) (radius * radius)));
+            }
+        }
+        return (out);
+    }
 }

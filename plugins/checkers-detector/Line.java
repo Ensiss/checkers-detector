@@ -38,6 +38,7 @@ public class Line {
     }
 
     public void clip(Image mask) {
+        double margin = 20.0;
         double x, y;
         double dx = _end.x - _start.x;
         double dy = _end.y - _start.y;
@@ -50,8 +51,8 @@ public class Line {
         y = _start.y;
         for (int i = 0; i < steps; i++) {
             if (mask.get((int) x, (int) y) > 0) {
-                _start.x = x;
-                _start.y = y;
+                _start.x = x - margin * dx;
+                _start.y = y - margin * dy;
                 break;
             }
             x += dx;
@@ -63,8 +64,8 @@ public class Line {
         y = _end.y;
         for (int i = 0; i < steps; i++) {
             if (mask.get((int) x, (int) y) > 0) {
-                _end.x = x;
-                _end.y = y;
+                _end.x = x + margin * dx;
+                _end.y = y + margin * dy;
                 break;
             }
             x -= dx;

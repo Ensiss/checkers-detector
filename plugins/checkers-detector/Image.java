@@ -70,6 +70,19 @@ public class Image {
         return (new Image(ip));
     }
 
+    public Image drawBoard(Board b) {
+        ImagePlus imp = this.getImagePlus();
+        ImageProcessor ip = imp.getProcessor();
+
+        for (int i = 0; i < 9; i++) {
+            ip.drawLine((int) b.get(0, i).x, (int) b.get(0, i).y,
+                        (int) b.get(8, i).x, (int) b.get(8, i).y);
+            ip.drawLine((int) b.get(i, 0).x, (int) b.get(i, 0).y,
+                        (int) b.get(i, 8).x, (int) b.get(i, 8).y);
+        }
+        return (new Image(ip));
+    }
+
     public Image convolve(Mask m){
         return convolve(m, 0);
     }
