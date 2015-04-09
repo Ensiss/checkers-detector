@@ -10,7 +10,7 @@ public class Board {
         set(8, 0, ur);
         set(0, 8, ll);
         set(8, 8, lr);
-        updateEdges();
+        updatePoints();
     }
 
     public Board(Image img) {
@@ -18,6 +18,11 @@ public class Board {
              new Point(img.getWidth() - 1, 0),
              new Point(0, img.getHeight() - 1),
              new Point(img.getWidth() - 1, img.getHeight() - 1));
+    }
+
+    public void updatePoints() {
+        updateEdges();
+        updateInside();
     }
 
     public void updateEdges() {
@@ -32,6 +37,11 @@ public class Board {
     }
 
     public void updateInside() {
+        for (int y = 1; y < 8; y++) {
+            for (int x = 1; x < 8; x++) {
+                set(x, y, new Line(get(x, 0), get(x, 8)).intersect(new Line(get(0, y), get(8, y))));
+            }
+        }
     }
 
     public void set(int x, int y, Point pt) {
