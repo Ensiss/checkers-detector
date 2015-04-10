@@ -8,7 +8,6 @@ public class LineDetection {
         int maxDist = (int) Math.sqrt(img.getWidth() * img.getWidth() + img.getHeight() * img.getHeight());
 
         Image edges = EdgeDetection.canny(Filter.median(img, 2), 2, 25, 50);
-        edges.display();
 
         Image houghSpace = new Image(360, 2 * maxDist);
 
@@ -28,13 +27,10 @@ public class LineDetection {
         }
 
         houghSpace = Histogram.normalize(houghSpace);
-        houghSpace.display();
         houghSpace = Segmentation.smartMax(houghSpace, 40);
-        houghSpace.display();
 
         StructElement elt = new StructElement(StructElement.Type.CIRCLE, 2);
         Image mask = Morphology.dilate(edges, elt);
-        mask.display();
 
         List<Line> lines = new ArrayList<Line>();
         for (int y = 0; y < houghSpace.getHeight(); y++) {
