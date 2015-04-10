@@ -61,22 +61,27 @@ public class EdgeDetection {
 
         for (int y = 0; y < img.getHeight(); y++) {
             for (int x = 0; x < img.getWidth(); x++) {
-                double mindist = -1;
-                for (int j = -radius; j <= radius; j++) {
-                    for (int i = -radius; i <= radius; i++) {
-                        if (x + i < 0 || x + i >= img.getWidth() ||
-                            y + j < 0 || y + j >= img.getHeight())
+                double dist = -1;
+                for (int r = 0; r < radius && dist == -1; r++) {
+                    for (int i = -r; i <= r && dist == -1; i++) {
+                        if (x + i < 0 || x + i >= img.getWidth())
                             continue;
-                        double dist = i * i + j * j;
-                        if (img.get(x + i, y + j) == 255 &&
-                            (mindist == -1 || dist < mindist))
-                            mindist = dist;
+                        if ((y - r >= 0 && y - r < img.getHeight() && img.get(x + i, y - r) == 255) ||
+                            (y + r >= 0 && y + r < img.getHeight() && img.get(x + i, y + r) == 255))
+                            dist = r;
+                    }
+                    for (int j = -r + 1; j <= r - 1 && dist == -1; j++) {
+                        if (y + j < 0 || y + j >= img.getHeight())
+                            continue;
+                        if ((x - r >= 0 && x - r < img.getWidth() && img.get(x - r, y + j) == 255) ||
+                            (x + r >= 0 && x + r < img.getWidth() && img.get(x + r, y + j) == 255))
+                            dist = r;
                     }
                 }
-                if (mindist == -1 || mindist > radius * radius)
+                if (dist == -1)
                     out.put(x, y, 0);
                 else
-                    out.put(x, y, 255 - (255.0 * mindist / (double) (radius * radius)));
+                    out.put(x, y, 255 - (255.0 * dist / (double) radius));
             }
         }
         return (out);
