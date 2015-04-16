@@ -22,7 +22,7 @@ public class Board {
 
     public void updatePoints() {
         updateEdges();
-        updateInside();
+        // updateInside();
     }
 
     public void updateEdges() {

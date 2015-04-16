@@ -74,6 +74,7 @@ public class Image {
         ImagePlus imp = this.getImagePlus();
         ImageProcessor ip = imp.getProcessor();
 
+        ip.setColor(255);
         for (int i = 0; i < 9; i++) {
             ip.drawLine((int) b.get(0, i).x, (int) b.get(0, i).y,
                         (int) b.get(8, i).x, (int) b.get(8, i).y);
@@ -83,6 +84,7 @@ public class Image {
         for (int y = 0; y < 9; y++)
             for (int x = 0; x < 9; x++)
                 ip.fillOval((int) b.get(x, y).x - 2, (int) b.get(x, y).y - 2, 4, 4);
+        ip.setColor(0);
         return (new Image(ip));
     }
 
