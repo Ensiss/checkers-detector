@@ -27,12 +27,20 @@ public class Board {
 
     public void updateEdges() {
         Point pt;
-        for (int i = 1; i < 8; i++) {
-            set(0, i, Utils.lerp(get(0, 0), get(0, 8), (double) i / 8.0));
-            set(8, i, Utils.lerp(get(8, 0), get(8, 8), (double) i / 8.0));
+        for (int y = 1; y < 8; y++) {
+            double yratio = (double) y / 8.0;
+            yratio *= Utils.lerp((get(8, 0).x - get(0, 0).x) / (get(8, 8).x - get(0, 8).x), 1, yratio);
 
-            set(i, 0, Utils.lerp(get(0, 0), get(8, 0), (double) i / 8.0));
-            set(i, 8, Utils.lerp(get(0, 8), get(8, 8), (double) i / 8.0));
+            set(0, y, Utils.lerp(get(0, 0), get(0, 8), yratio));
+            set(8, y, Utils.lerp(get(8, 0), get(8, 8), yratio));
+        }
+
+        for (int x = 1; x < 8; x++) {
+            double xratio = (double) x / 8.0;
+            xratio *= Utils.lerp((get(0, 8).y - get(0, 0).y) / (get(8, 8).y - get(8, 0).y), 1, xratio);
+
+            set(x, 0, Utils.lerp(get(0, 0), get(8, 0), xratio));
+            set(x, 8, Utils.lerp(get(0, 8), get(8, 8), xratio));
         }
     }
 

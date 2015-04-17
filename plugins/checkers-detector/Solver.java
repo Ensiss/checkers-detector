@@ -95,7 +95,6 @@ public class Solver {
                 }
             }
         }
-        System.out.println("Best fit: " + maxFit);
         if (maxIndex != -1)
             return (quadList.get(maxIndex));
         return (null);
@@ -103,13 +102,12 @@ public class Solver {
 
     public static Image findCheckers(Image img) {
         List<Line> lines = LineDetection.hough(img);
+        img.drawLines(lines).display();
         Image grad = EdgeDetection.edgeGradient(img, 10);
         List<Point> rect = getBestQuad(grad, lines);
 
         grad.display();
-        img.drawPts(rect).display();
         Board board = new Board(rect.get(0), rect.get(1), rect.get(2), rect.get(3));
-        img.drawBoard(board).display();
-        return (img);
+        return (img.drawBoard(board));
     }
 }

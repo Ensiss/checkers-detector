@@ -81,9 +81,9 @@ public class Image {
             ip.drawLine((int) b.get(i, 0).x, (int) b.get(i, 0).y,
                         (int) b.get(i, 8).x, (int) b.get(i, 8).y);
         }
-        for (int y = 0; y < 9; y++)
-            for (int x = 0; x < 9; x++)
-                ip.fillOval((int) b.get(x, y).x - 2, (int) b.get(x, y).y - 2, 4, 4);
+        // for (int y = 0; y < 9; y++)
+        //     for (int x = 0; x < 9; x++)
+        //         ip.fillOval((int) b.get(x, y).x - 2, (int) b.get(x, y).y - 2, 4, 4);
         ip.setColor(0);
         return (new Image(ip));
     }
