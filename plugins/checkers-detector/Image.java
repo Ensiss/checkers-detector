@@ -7,11 +7,17 @@ public class Image {
     private double[][]  _data;
     private int         _width;
     private int         _height;
+    private String      _title;
 
     public Image(int width, int height) {
         _width = width;
         _height = height;
         _data = new double[height][width];
+    }
+
+    public Image(int width, int height, String title) {
+        this(width, height);
+        setTitle(title);
     }
 
     public Image(int size) {
@@ -22,7 +28,10 @@ public class Image {
         this(ip.getWidth(), ip.getHeight());
         for (int y = 0; y < ip.getHeight(); y++) {
             for (int x = 0; x < ip.getWidth(); x++) {
-                put(x, y, ip.getPixel(x, y));
+                int[] rgb = new int[3];
+                ip.getPixel(x, y, rgb);
+                System.out.println(rgb[0] + "+" +rgb[1] + "+" +rgb[2] + "+" + (rgb[0]+rgb[1]+rgb[2]));
+                put(x, y, (rgb[0] + rgb[1] + rgb[2]) / 3);
             }
         }
     }
@@ -40,7 +49,7 @@ public class Image {
     }
 
     public Image(Image img, int x, int y, int width, int height){
-        this(width, height);
+        this(width, height, img.getTitle());
 
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
@@ -131,9 +140,9 @@ public class Image {
     }
 
     public void erase(int x, int y, int radius){
-        if(radius == 0 || x < 0 || x >= this.getWidth() || y < 0 || y >= this.getHeight()){
+        if (radius == 0 || x < 0 || x >= this.getWidth() || y < 0 || y >= this.getHeight())
             return;
-        }
+
         this.put(x, y, 0);
         radius -= 1;
         erase(x+1, y, radius);
@@ -142,8 +151,28 @@ public class Image {
         erase(x, y-1, radius);
     }
 
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (o == null || !(o instanceof Image))
+            return false;
+
+        Image img = Image.class.cast(o);
+        if (getWidth() != img.getWidth() || getHeight() != img.getHeight())
+            return false;
+
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {
+                if (get(j, i) != img.get(i, j))
+                    return false;
+            }
+        }
+        return true;
+    }
+
     public ImagePlus getImagePlus() {
         ImagePlus imp = NewImage.createByteImage("", _width, _height, 1, NewImage.FILL_BLACK);
+        imp.setTitle(this._title);
         ImageProcessor ip = imp.getProcessor();
 
         for (int y = 0; y < _height; y++) {
@@ -170,8 +199,20 @@ public class Image {
         return (_data);
     }
 
+    public String getTitle() {
+        return (_title);
+    }
+
+    public void setTitle(Object s) {
+        this._title = s == null ? "" : s.toString();
+    }
+
     public double get(int x, int y) {
         return (_data[y][x]);
+    }
+
+    public int hashCode() {
+        return Arrays.hashCode(getData());
     }
 
     public void set(int x, int y, double value) {

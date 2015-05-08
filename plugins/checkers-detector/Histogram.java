@@ -23,13 +23,8 @@ public class Histogram {
 
     public static Image equalize(Image img) {
         Image result = new Image(img.getWidth(), img.getHeight());
-        int[] hist = new int[256];
+        int[] hist = getHisto(img);
 
-        for (int y = 0; y < img.getHeight(); y++) {
-            for (int x = 0; x < img.getWidth(); x++) {
-                hist[(int) img.get(x, y)]++;
-            }
-        }
         for (int i = 1; i < 256; i++)
             hist[i] += hist[i - 1];
 
@@ -40,5 +35,15 @@ public class Histogram {
             }
         }
         return (result);
+    }
+
+    public static int[] getHisto(Image img) {
+        int[] result = new int[256];
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                result[(int)img.get(x, y)]++;
+            }
+        }
+        return result;
     }
 }
