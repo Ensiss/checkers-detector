@@ -105,12 +105,13 @@ public class Solver {
     public static Image findCheckers(Image img) {
         img = Transform.resize(img, 500);
         List<Line> lines = LineDetection.hough(img);
-        img.drawLines(lines).display();
+        // img.drawLines(lines).display();
         Image grad = EdgeDetection.edgeGradient(img, 10);
-        grad.display();
+        // grad.display();
         List<Point> rect = getBestQuad(grad, lines);
 
-        Board board = new Board(rect.get(0), rect.get(1), rect.get(2), rect.get(3));
-        return (img.drawBoard(board));
+        return (Histogram.normalize(Transform.project(img, rect, 512)));
+        // Board board = new Board(rect.get(0), rect.get(1), rect.get(2), rect.get(3));
+        // return (img.drawBoard(board));
     }
 }

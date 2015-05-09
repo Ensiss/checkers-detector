@@ -22,9 +22,7 @@ public class BoardReader_ implements PlugInFilter {
 
     public void run(ImageProcessor ip){
         Image img = new Image(ip);
-        List<Line> lines = LineDetection.hough(img);
-        List<Point> rect = HoughLines_.getMaxArea(img, lines);
-        img = Histogram.normalize(Transform.project(img, rect, 512));
+        img = Solver.findCheckers(img);
         img.display();
         traverse(img).display();
     };
