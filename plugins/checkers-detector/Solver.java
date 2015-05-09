@@ -40,11 +40,13 @@ public class Solver {
     }
 
     public static double getQuadFitness(Image grad, List<Point> pts) {
-        double mindist = 100;
+        double mindist = 150;
         if (pts.get(0).dist(pts.get(1)) < mindist ||
             pts.get(0).dist(pts.get(2)) < mindist ||
+            pts.get(0).dist(pts.get(3)) < mindist ||
             pts.get(3).dist(pts.get(1)) < mindist ||
-            pts.get(3).dist(pts.get(2)) < mindist)
+            pts.get(3).dist(pts.get(2)) < mindist ||
+            pts.get(1).dist(pts.get(2)) < mindist)
             return (0.0);
 
         Board board = new Board(pts.get(0), pts.get(1), pts.get(2), pts.get(3));
@@ -101,12 +103,13 @@ public class Solver {
     }
 
     public static Image findCheckers(Image img) {
+        img = Transform.resize(img, 500);
         List<Line> lines = LineDetection.hough(img);
         img.drawLines(lines).display();
         Image grad = EdgeDetection.edgeGradient(img, 10);
+        grad.display();
         List<Point> rect = getBestQuad(grad, lines);
 
-        grad.display();
         Board board = new Board(rect.get(0), rect.get(1), rect.get(2), rect.get(3));
         return (img.drawBoard(board));
     }

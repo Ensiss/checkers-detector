@@ -116,7 +116,7 @@ public class Segmentation {
                 }
             }
             result.put(x, y, 255);
-            tmp.erase(x, y, 10);
+            tmp.erase(x, y, 5);
         }
         return result;
     }

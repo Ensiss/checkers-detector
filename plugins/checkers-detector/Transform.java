@@ -56,6 +56,44 @@ public class Transform {
                       -Math.tan(a/2));
     }
 
+    public static Image resize(Image img, int width, int height) {
+        Image out = new Image(width, height);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                double xratio = (double) x / (double) width;
+                double yratio = (double) y / (double) height;
+                Point pt = new Point(Utils.lerp(0, img.getWidth(), xratio),
+                                     Utils.lerp(0, img.getHeight(), yratio));
+                int px = (int) pt.x, py = (int) pt.y;
+                Point frac = new Point(pt.x - px, pt.y - py);
+                double col = 0;
+
+                if (px == img.getWidth() - 1 || py == img.getHeight() - 1)
+                    col = img.get(px, py);
+                else {
+                    col += img.get(px, py) * ((1 - frac.x) * (1 - frac.y));
+                    col += img.get(px + 1, py) * (frac.x * (1 - frac.y));
+                    col += img.get(px, py + 1) * ((1 - frac.x) * frac.y);
+                    col += img.get(px + 1, py + 1) * (frac.x * frac.y);
+                }
+                out.put(x, y, col);
+            }
+        }
+        return (out);
+    }
+
+    public static Image resize(Image img, int size) {
+        double ratio = (double) img.getWidth() / (double) img.getHeight();
+        Image out;
+
+        if (ratio > 1.0) // width > height
+            out = resize(img, size, (int) (size / ratio));
+        else
+            out = resize(img, (int) (size * ratio), size);
+        return (out);
+    }
+
     public static Image project(Image img, List<Point> orig, int size) {
         Image out = new Image(size);
 
