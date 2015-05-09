@@ -26,11 +26,19 @@ public class Image {
 
     public Image(ImageProcessor ip) {
         this(ip.getWidth(), ip.getHeight());
-        for (int y = 0; y < ip.getHeight(); y++) {
-            for (int x = 0; x < ip.getWidth(); x++) {
-                int[] rgb = new int[3];
-                ip.getPixel(x, y, rgb);
-                put(x, y, (rgb[0] + rgb[1] + rgb[2]) / 3);
+        if (ip.isGrayscale()) {
+            for (int y = 0; y < ip.getHeight(); y++) {
+                for (int x = 0; x < ip.getWidth(); x++) {
+                    put(x, y, ip.getPixel(x, y));
+                }
+            }
+        } else {
+            for (int y = 0; y < ip.getHeight(); y++) {
+                for (int x = 0; x < ip.getWidth(); x++) {
+                    int[] rgb = new int[3];
+                    ip.getPixel(x, y, rgb);
+                    put(x, y, (rgb[0] + rgb[1] + rgb[2]) / 3);
+                }
             }
         }
     }
