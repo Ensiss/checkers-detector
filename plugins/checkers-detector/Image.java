@@ -30,7 +30,6 @@ public class Image {
             for (int x = 0; x < ip.getWidth(); x++) {
                 int[] rgb = new int[3];
                 ip.getPixel(x, y, rgb);
-                System.out.println(rgb[0] + "+" +rgb[1] + "+" +rgb[2] + "+" + (rgb[0]+rgb[1]+rgb[2]));
                 put(x, y, (rgb[0] + rgb[1] + rgb[2]) / 3);
             }
         }
