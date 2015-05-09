@@ -71,7 +71,7 @@ public class Transform {
                 Point frac = new Point(pt.x - px, pt.y - py);
                 double col = 0;
 
-                if (px < 0 || py < 0 || px > img.getWidth() || py > img.getHeight())
+                if (px < 0 || py < 0 || px >= img.getWidth() || py >= img.getHeight())
                     col = 0;
                 else if (px == img.getWidth() - 1 || py == img.getHeight() - 1)
                     col = img.get(px, py);
