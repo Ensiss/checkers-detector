@@ -1,16 +1,24 @@
+import java.util.*;
+
 public class Board {
     private Point[][] _data;
+    private int _nbCase;
 
-    public Board(Point ul, Point ur, Point ll, Point lr) {
-        _data = new Point[9][9];
-        for (int y = 0; y < 9; y++)
-            for (int x = 0; x < 9; x++)
+    public Board(Point ul, Point ur, Point ll, Point lr, int nbCase) {
+        _nbCase = nbCase;
+        _data = new Point[_nbCase + 1][_nbCase + 1];
+        for (int y = 0; y < _nbCase + 1; y++)
+            for (int x = 0; x < _nbCase + 1; x++)
                 _data[y][x] = new Point();
         set(0, 0, ul);
-        set(8, 0, ur);
-        set(0, 8, ll);
-        set(8, 8, lr);
+        set(_nbCase, 0, ur);
+        set(0, _nbCase, ll);
+        set(_nbCase, _nbCase, lr);
         updatePoints();
+    }
+
+    public Board(Point ul, Point ur, Point ll, Point lr) {
+        this(ul, ur, ll, lr, 10);
     }
 
     public Board(Image img) {
@@ -26,27 +34,27 @@ public class Board {
     }
 
     public void updateEdges() {
-        for (int y = 1; y < 8; y++) {
-            double yratio = (double) y / 8.0;
-            yratio *= Utils.lerp(get(8, 0).dist(get(0, 0)) / get(8, 8).dist(get(0, 8)), 1, yratio);
+        for (int y = 1; y < _nbCase; y++) {
+            double yratio = (double) y / (double) _nbCase;
+            yratio *= Utils.lerp(get(_nbCase, 0).dist(get(0, 0)) / get(_nbCase, _nbCase).dist(get(0, _nbCase)), 1, yratio);
 
-            set(0, y, Utils.lerp(get(0, 0), get(0, 8), yratio));
-            set(8, y, Utils.lerp(get(8, 0), get(8, 8), yratio));
+            set(0, y, Utils.lerp(get(0, 0), get(0, _nbCase), yratio));
+            set(_nbCase, y, Utils.lerp(get(_nbCase, 0), get(_nbCase, _nbCase), yratio));
         }
 
-        for (int x = 1; x < 8; x++) {
-            double xratio = (double) x / 8.0;
-            xratio *= Utils.lerp(get(0, 8).dist(get(0, 0)) / get(8, 8).dist(get(8, 0)), 1, xratio);
+        for (int x = 1; x < _nbCase; x++) {
+            double xratio = (double) x / (double) _nbCase;
+            xratio *= Utils.lerp(get(0, _nbCase).dist(get(0, 0)) / get(_nbCase, _nbCase).dist(get(_nbCase, 0)), 1, xratio);
 
-            set(x, 0, Utils.lerp(get(0, 0), get(8, 0), xratio));
-            set(x, 8, Utils.lerp(get(0, 8), get(8, 8), xratio));
+            set(x, 0, Utils.lerp(get(0, 0), get(_nbCase, 0), xratio));
+            set(x, _nbCase, Utils.lerp(get(0, _nbCase), get(_nbCase, _nbCase), xratio));
         }
     }
 
     public void updateInside() {
-        for (int y = 1; y < 8; y++) {
-            for (int x = 1; x < 8; x++) {
-                set(x, y, new Line(get(x, 0), get(x, 8)).intersect(new Line(get(0, y), get(8, y))));
+        for (int y = 1; y < _nbCase; y++) {
+            for (int x = 1; x < _nbCase; x++) {
+                set(x, y, new Line(get(x, 0), get(x, _nbCase)).intersect(new Line(get(0, y), get(_nbCase, y))));
             }
         }
     }
@@ -57,5 +65,27 @@ public class Board {
 
     public Point get(int x, int y) {
         return (_data[y][x]);
+    }
+
+    public void resize(double ratio) {
+        _data[0][0] = _data[0][0].mult(ratio);
+        _data[0][_nbCase] = _data[0][_nbCase].mult(ratio);
+        _data[_nbCase][0] = _data[_nbCase][0].mult(ratio);
+        _data[_nbCase][_nbCase] = _data[_nbCase][_nbCase].mult(ratio);
+        updatePoints();
+    }
+
+    public List<Point> getCorners() {
+        List<Point> pts = new ArrayList<Point>();
+
+        pts.add(get(0, 0));
+        pts.add(get(_nbCase, 0));
+        pts.add(get(0, _nbCase));
+        pts.add(get(_nbCase, _nbCase));
+        return (pts);
+    }
+
+    public int getNbCase() {
+        return (_nbCase);
     }
 }

@@ -22,8 +22,13 @@ public class BoardReader_ implements PlugInFilter {
 
     public void run(ImageProcessor ip){
         Image img = new Image(ip);
-        img = Solver.findCheckers(img);
+        Board board = Solver.findCheckers(img);
+        List<Point> rect = board.getCorners();
+        int boardSize = board.getNbCase();
+
+        img = Histogram.normalize(Transform.project(img, rect, 512));
         img.display();
+
         traverse(img).display();
     };
 

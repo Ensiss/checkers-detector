@@ -89,13 +89,14 @@ public class Image {
     public Image drawBoard(Board b) {
         ImagePlus imp = this.getImagePlus();
         ImageProcessor ip = imp.getProcessor();
+        int nbCase = b.getNbCase();
 
         ip.setColor(255);
         for (int i = 0; i < 9; i++) {
             ip.drawLine((int) b.get(0, i).x, (int) b.get(0, i).y,
-                        (int) b.get(8, i).x, (int) b.get(8, i).y);
+                        (int) b.get(nbCase, i).x, (int) b.get(nbCase, i).y);
             ip.drawLine((int) b.get(i, 0).x, (int) b.get(i, 0).y,
-                        (int) b.get(i, 8).x, (int) b.get(i, 8).y);
+                        (int) b.get(i, nbCase).x, (int) b.get(i, nbCase).y);
         }
         // for (int y = 0; y < 9; y++)
         //     for (int x = 0; x < 9; x++)
