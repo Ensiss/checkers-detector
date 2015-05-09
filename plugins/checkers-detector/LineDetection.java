@@ -7,7 +7,7 @@ public class LineDetection {
     public static List<Line> hough(Image img) {
         int maxDist = (int) Math.sqrt(img.getWidth() * img.getWidth() + img.getHeight() * img.getHeight());
 
-        Image edges = EdgeDetection.canny(Filter.median(img, 2), 2, 25, 50);
+        Image edges = EdgeDetection.canny(img, 2, 25, 50);
 
         Image houghSpace = new Image(360, 2 * maxDist);
 
