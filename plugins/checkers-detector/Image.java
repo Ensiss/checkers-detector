@@ -180,6 +180,16 @@ public class Image {
         return true;
     }
 
+    public double getMeanColor() {
+        double result = 0.0;
+        for (int j = 0; j < _height; j++) {
+            for (int i = 0; i < _width; i++) {
+                result += get(i, j);
+            }
+        }
+        return result / (_height * _width);
+    }
+
     public ImagePlus getImagePlus() {
         ImagePlus imp = NewImage.createByteImage("", _width, _height, 1, NewImage.FILL_BLACK);
         imp.setTitle(this._title);

@@ -7,7 +7,21 @@ import java.util.ArrayList;
  * As kmeans is ran multiple times, it is multithreaded.*/
 public class Clusters {
 
-    public static Image minimalLink (int[][][] arrays, int classes) {
+    private static int[][][] getHistograms (Image img, int boardSize) {
+        int rowNum = boardSize, colNum = boardSize;
+        int[][][] histos = new int[rowNum][colNum][];
+        int sqWidth = img.getWidth() / colNum, sqHeight = img.getHeight() / rowNum;
+        for (int i = 0; i < rowNum; i++) {
+            for (int j = 0; j < colNum; j++) {
+                histos[i][j] = Histogram.getHisto(new Image(img, i*sqWidth, j*sqHeight, sqWidth, sqHeight));
+            }
+        }
+        return histos;
+    }
+
+    public static Image minimalLink (Image img, int boardSize) {
+        int[][][] arrays = getHistograms(img, boardSize);
+        int classes = 4;
         ArrayList<AHCNode> nodes = new ArrayList<AHCNode>();
         for (int y = 0; y < arrays.length; y++) {
             for (int x = 0; x < arrays[y].length; x++) {
@@ -56,7 +70,9 @@ public class Clusters {
         return result;
     }
 
-    public static Image kmeans (int[][][] arrays, int classes) {
+    public static Image kmeans (Image img, int boardSize) {
+        int[][][] arrays = getHistograms(img, boardSize);
+        int classes = 4;
         KmeanThread[] threads = new KmeanThread[10];
         for (int i = 0; i < threads.length; i++) {
             threads[i] = new KmeanThread(arrays, classes);
