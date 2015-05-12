@@ -1,0 +1,82 @@
+\documentclass{beamer}
+\usetheme{Berkeley}\usecolortheme{whale}
+%\usetheme{Hannover}\usecolortheme{beaver}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{array}
+\title[Algorithmes Animés]{L3I1 - Algorithmes Animés}
+\author[Ecormier Lacambre]{Pierre Ecormier, Ghjuvan Lacambre}
+\institute[Paris Descartes]{Université René Descartes, Paris V\\UFR de Mathématiques et Informatique}
+\date{\today}
+\begin{document}
+\sffamily
+    \maketitle
+    \begin{frame}
+        \frametitle{Table of Contents}
+        \tableofcontents
+    \end{frame}
+    \section{Introduction}
+    \begin{frame}
+      \frametitle{Introduction}
+      \begin{itemize}
+      \item Détecter un damier dans une image
+      \item Gestion de la rotation, perspective, etc
+      \item Gestion des damiers de 8 ou 10 cases
+      \end{itemize}
+    \end{frame}
+    \section{Extraction du damier}
+    \subsection{Détection}
+    \begin{frame}
+      \frametitle{Détection}
+      \begin{itemize}
+      \item Canny
+      \item Hough Transform
+      \item Algorithme de pattern matching maison
+      \end{itemize}
+    \end{frame}
+    \subsection{Normalisation}
+    \begin{frame}
+      \frametitle{Normalisation}
+      \begin{itemize}
+      \item Bilinear interpolation
+      \item Redressement de perspective
+      \end{itemize}
+    \end{frame}
+    \section{Détection des pions}
+    \subsection{Détection du fond}
+    \begin{frame}
+      \frametitle{Détection du fond}
+      \begin{itemize}
+      \item Détection de l'ordre du damier
+      \item Blanc-noir ou noir-blanc
+      \item Facilite le traitement suivant
+      \end{itemize}
+    \end{frame}
+    \subsection{Détection des pions}
+    \begin{frame}
+      \frametitle{Détection des pions}
+      \begin{itemize}
+      \item k-means
+      \item CAH avec lien minimal
+      \item Différences d'histogrammes
+      \end{itemize}
+    \end{frame}
+    \section{Conclusion}
+    \subsection{Défauts}
+    \begin{frame}
+      \frametitle{Défauts}
+      \begin{itemize}
+      \item Images comprenant des textures (herbe, moquette, etc)
+      \item Pions noirs sur noir ou blanc sur blanc
+      \end{itemize}
+    \end{frame}
+    \subsection{Améliorations}
+    \begin{frame}
+      \frametitle{Améliorations}
+      \begin{itemize}
+      \item Détection des pions avec Hough Circles (peut apporter des échecs sur certains cas)
+      \item Plus de pré-traitement (suppression de textures, etc)
+      \end{itemize}
+    \end{frame}
+  \end{document}
